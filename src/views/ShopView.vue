@@ -67,8 +67,6 @@ const productsLength = computed(() => {
   return shopStore.filteredProducts.length;
 })
 
-
-
 fetchProducts();
 fetchCategories();
 </script>

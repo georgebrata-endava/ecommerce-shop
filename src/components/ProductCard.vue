@@ -1,6 +1,6 @@
 <template>
-    <div class="relative m-3 mx-auto flex flex-wrap justify-center">
-        <div class="relative mx-1 my-3 min-w-[340px] max-w-sm cursor-pointer rounded-3xl bg-white p-2 shadow-md">
+    <div class="product-card relative m-3 mx-auto flex flex-wrap justify-center">
+        <div v-if="product" class="relative mx-1 my-3 min-w-[340px] max-w-sm cursor-pointer rounded-3xl bg-white p-2 shadow-md">
             <div class="relative overflow-x-hidden rounded-2xl">
                 <img class="h-40 w-full rounded-2xl object-cover" :src="product.image" />
             </div>
@@ -9,7 +9,7 @@
                     <p class="mb-0 text-lg font-semibold text-gray-900">{{ product.title }}</p>
                     <p class="text-md mt-0 text-gray-800">${{ product.price }}</p>
                 </div>
-                <div v-if="!isInCart" class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse" @click="addToCart(product)">
+                <div v-if="!isInCart" id="add-to-cart" class="group mb-1 mr-4 flex cursor-pointer flex-col-reverse" @click="addToCart(product)">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 opacity-70 group-hover:opacity-50" fill="none"
                         viewBox="0 0 24 24" stroke="black">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -28,16 +28,20 @@
 const props = defineProps({
     product: Object
 })
+const emit = defineEmits(['add-to-cart', 'remove-from-cart']);
+
 import { computed } from 'vue';
 import { useShopStore } from '../stores/shop.js'
 const shopStore = useShopStore();
 
 function addToCart(product) {
     shopStore.addToCart(product)
+    emit('add-to-cart')
 }
 
 function removeFromCart(product) {
     shopStore.removeFromCart(product)
+    emit('remove-from-cart')
 }
 
 const isInCart = computed(() => {
