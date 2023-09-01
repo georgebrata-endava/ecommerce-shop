@@ -1,6 +1,6 @@
 # commerce-vue
 
-This template should help get you started developing with Vue 3 in Vite.
+eCommerce temaple built in Vue3 with Tailwind.
 
 ## Recommended IDE Setup
 
@@ -26,4 +26,10 @@ npm run dev
 
 ```sh
 npm run build
+```
+
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
 ```
