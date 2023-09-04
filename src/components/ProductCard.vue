@@ -24,22 +24,23 @@
     </div>
 </template>
   
-<script setup>
-const props = defineProps({
-    product: Object
-})
+<script setup lang="ts">
+const props = defineProps<{
+  product: Product
+}>()
 const emit = defineEmits(['add-to-cart', 'remove-from-cart']);
 
+import type { Product } from '@/types/Product.interface';
 import { computed } from 'vue';
-import { useShopStore } from '../stores/shop.js'
+import { useShopStore } from '../stores/shop'
 const shopStore = useShopStore();
 
-function addToCart(product) {
+function addToCart(product: Product) {
     shopStore.addToCart(product)
     emit('add-to-cart')
 }
 
-function removeFromCart(product) {
+function removeFromCart(product:Product) {
     shopStore.removeFromCart(product)
     emit('remove-from-cart')
 }
@@ -49,4 +50,3 @@ const isInCart = computed(() => {
 })
 
 </script>
-  

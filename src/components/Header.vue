@@ -30,9 +30,9 @@
 </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue';
-import { useShopStore } from '../stores/shop.js'
+import { useShopStore } from '../stores/shop'
 const shopStore = useShopStore();
 
 const isCartEmpty = computed(() => {

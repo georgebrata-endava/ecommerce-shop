@@ -19,7 +19,7 @@
           </svg>
         </span>
 
-        <input type="text" placeholder="Search" class="block w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-11 pr-5 text-gray-700 placeholder-gray-400/70 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 rtl:pl-5 rtl:pr-11 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300 md:w-80" />
+        <input v-model="searchQuery" type="text" placeholder="Search" class="block w-full rounded-lg border border-gray-200 bg-white py-1.5 pl-11 pr-5 text-gray-700 placeholder-gray-400/70 focus:border-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40 rtl:pl-5 rtl:pr-11 dark:border-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:focus:border-blue-300 md:w-80" />
       </div>
     </div>
   </div>
@@ -35,18 +35,22 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 justify-center gap-4 md:grid-cols-2 xl:grid-cols-3">
-    <ProductCard v-for="p in shopStore.filteredProducts" :key="p.id" :product="p"/>
-  </div>
+  <!-- <products-list :products="productsFiltered" /> -->
+  <async-products-list :products="productsFiltered" />
 </section>
 </template>
 
-<script setup>
-import { computed, watch } from 'vue';
+<script setup lang="ts">
+import { computed, watch, ref } from 'vue';
 import ProductCard from '../components/ProductCard.vue'
-import { useShopStore } from '../stores/shop.js'
+import ProductsList from '../components/ProductsList.vue'
+import { useShopStore } from '../stores/shop'
+import { defineAsyncComponent } from "vue";
+import Loader from '@/components/Loader.vue';
+import Error from '@/components/Error.vue';
 
 const shopStore = useShopStore();
+let searchQuery = ref('');
 
 async function fetchProducts() {
   let products = await (await fetch("https://fakestoreapi.com/products")).json();
@@ -58,16 +62,34 @@ async function fetchCategories() {
   shopStore.setCategories(categories)
 }
 
-function setCategory(category) {
+function setCategory(category:string) {
   shopStore.setSelectedCategory(category);
 }
 
-
 const productsLength = computed(() => {
-  return shopStore.filteredProducts.length;
+  // return shopStore.filteredProducts.length;
+  return productsFiltered.value.length;
+})
+
+
+// Search - computed
+const productsFiltered = computed(() => {
+  if(searchQuery.value) {
+    return shopStore.filteredProducts.filter(p => p.title.toLowerCase().includes(searchQuery.value))
+  } else {
+    return shopStore.filteredProducts;
+  }
 })
 
 fetchProducts();
 fetchCategories();
+
+
+const AsyncProductsList = defineAsyncComponent({
+  loader: () => import("../components/ProductsList.vue"),
+  loadingComponent: Loader,
+  delay: 0, // default: 200
+  errorComponent: Error,
+});
 </script>
 
